@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { schedule } from "node-cron";
 import patreon from "patreon";
+import { exit } from "process";
 
 const patreonOAuth = patreon.oauth;
 const router = Router();
@@ -105,7 +106,6 @@ class TokenManager {
   }
 }
 
-const tokenManager = new TokenManager(process.env.PATREON_CLIENT_ID, process.env.PATREON_CLIENT_SECRET);
 
 // Check if required environment variables are set
 const requiredEnvVars = [
@@ -120,9 +120,11 @@ const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
 if (missingEnvVars.length > 0) {
   console.warn("Patreon OAuth configuration incomplete. Missing environment variables:", missingEnvVars);
   console.warn("Patreon integration will be disabled until these variables are set.");
+  exit(0);
 } else {
   console.log("Patreon OAuth configuration complete. Token manager initialized successfully.");
 }
+const tokenManager = new TokenManager(process.env.PATREON_CLIENT_ID, process.env.PATREON_CLIENT_SECRET);
 
 schedule("0 0 */10 * *", () => {
   if (tokenManager.creatorAccessToken) {
