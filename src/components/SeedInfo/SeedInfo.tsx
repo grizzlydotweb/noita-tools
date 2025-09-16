@@ -12,7 +12,7 @@ import Start from "./SeedInfoViews/Start";
 import Biome from "./SeedInfoViews/Biome";
 import Watercave from "./SeedInfoViews/Watercave";
 import FungalShifts from "./SeedInfoViews/FungalShifts";
-import HolyMountain from "./SeedInfoViews/HolyMountain";
+import HolyMountain from "./HolyMountain";
 
 import { db } from "../../services/db";
 import { useLiveQuery } from "dexie-react-hooks";

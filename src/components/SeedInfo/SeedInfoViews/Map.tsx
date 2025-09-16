@@ -170,7 +170,7 @@ const MapComponent = (props: IMapProps) => {
           }
           // console.log(mapData);
           const cvs = copyImage(mapData.map);
-          // console.log(x, y, mapData.interestPoints);
+          console.log(x, y, mapData.interestPoints);
           res.set(`${x}-${y}`, cvs);
         }
       }

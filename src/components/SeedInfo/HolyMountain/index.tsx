@@ -31,17 +31,18 @@ import {
 } from "../../../services/SeedInfo/infoHandler/InfoProviders/Perk";
 import { IShopItems, IShopType, ShopInfoProvider } from "../../../services/SeedInfo/infoHandler/InfoProviders/Shop";
 import { Square } from "../../helpers";
-import ShopItems from "./ShopItems";
+import ShopItems from "../SeedInfoViews/ShopItems";
 import { useTranslation } from "react-i18next";
 import Perk from "../../Icons/Perk";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, FavoriteType, FavoriteItem } from "../../../services/db";
 import useLocalStorage from "../../../services/useLocalStorage";
-import { useSpellFavorite, useFavoritePerks } from "./helpers";
+import { useSpellFavorite, useFavoritePerks } from "../SeedInfoViews/helpers";
 import classNames from "classnames";
 import Entity from "../../Icons/Entity";
 import { IItem } from "../../../services/SeedInfo/infoHandler/InfoProviders/ChestRandom";
 import { cloneDeep } from "lodash";
+import WorldSelector from "./components/WorldSelector";
 
 const perkWidth = "3rem";
 const gamblePerkDiff = "-0.8rem";
@@ -370,7 +371,6 @@ interface IHolyMountainHeaderProps {
   lotteries: number;
   setAdvanced: (boolean) => void;
   handleOffset: (type: "+" | "-") => void;
-  offsetText: () => ReactElement;
   handleReset: () => void;
   handleBack: () => void;
   isPerkFavorite: (string) => boolean;
@@ -388,7 +388,6 @@ const HolyMountainHeader = (props: IHolyMountainHeaderProps) => {
     handleOffset,
     handleReset,
     handleBack,
-    offsetText,
     isPerkFavorite,
   } = props;
 
@@ -398,15 +397,7 @@ const HolyMountainHeader = (props: IHolyMountainHeaderProps) => {
   return (
     <>
       <Stack gap={2} direction="horizontal" className="flex-wrap">
-        <Stack gap={3} direction="horizontal">
-          <Button variant="outline-primary" size="sm" onClick={() => handleOffset("-")}>
-            &lt;
-          </Button>
-          <span className="block capitalize">{offsetText()}</span>
-          <Button variant="outline-primary" size="sm" onClick={() => handleOffset("+")}>
-            &gt;
-          </Button>
-        </Stack>
+        <WorldSelector />
         <div className="ms-auto" />
         <Form.Switch
           checked={advanced}
@@ -539,7 +530,7 @@ interface IPerkData {
   lotteries: number;
 }
 
-const HolyMountainContext = createContext<any>({});
+export const HolyMountainContext = createContext<any>({});
 
 interface IHolyMountainContextProviderProps {
   infoProvider: GameInfoProvider;
@@ -550,7 +541,7 @@ interface IHolyMountainContextProviderProps {
 // This is messy because there are two ways of generating perks: provide() and provideStateful()
 // For refactoring, it should be best to have the stateful provide everything and create a transition function
 // from action[] => old config.
-const HolyMountainContextProvider = (props: IHolyMountainContextProviderProps) => {
+export const HolyMountainContextProvider = (props: IHolyMountainContextProviderProps) => {
   const { infoProvider, perks: simplePerks, perkDeck } = props;
   const [advanced, setAdvanced] = useState(() => infoProvider.config.perksAdvanced);
 
@@ -865,49 +856,6 @@ const HolyMountain = (props: IHolyMountainProps) => {
     [infoProvider.providers.pacifistChest],
   );
 
-  const OffsetText = () => {
-    const [clicked, setClicked] = useState(false);
-    const formRef = useRef<HTMLInputElement>(null);
-    let direction = worldOffset === 0 ? "Main" : worldOffset < 0 ? "West" : "East";
-
-    useEffect(() => {
-      if (clicked) {
-        formRef.current!.focus();
-      }
-    }, [clicked]);
-
-    return (
-      <div
-        className={classNames(!clicked && "border border-dark rounded px-3 py-1")}
-        onClick={() => {
-          setClicked(true);
-        }}
-      >
-        {!clicked && `${direction} World ${Math.abs(worldOffset) || ""}`}
-        <Form.Control
-          size="sm"
-          style={{ width: "8rem" }}
-          hidden={!clicked}
-          ref={formRef}
-          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.key === "Enter") {
-              e.currentTarget.blur();
-            }
-          }}
-          onBlur={e => {
-            setClicked(false);
-            const value = parseInt(e.target.value);
-            if (isNaN(value)) {
-              return;
-            }
-            handleOffset(value);
-          }}
-          placeholder={worldOffset}
-        />
-      </div>
-    );
-  };
-
   return (
     <div
       style={{
@@ -926,7 +874,6 @@ const HolyMountain = (props: IHolyMountainProps) => {
         handleReset={handleReset}
         handleOffset={handleOffset}
         handleBack={handleBack}
-        offsetText={OffsetText}
         isPerkFavorite={isFavorite}
         lotteries={lotteries}
       />

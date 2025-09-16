@@ -1,8 +1,9 @@
 import React, { createContext, useEffect, useState, useCallback } from "react";
-import { Stack } from "react-bootstrap";
+import { Stack, Button } from "react-bootstrap";
 
 import type { GameInfoProvider } from "../../services/SeedInfo/infoHandler";
 import SeedInfo from "./SeedInfo";
+import SeedExplorer from "./SeedExplorer/index.tsx";
 
 import i18n from "../../i18n";
 import { db } from "../../services/db";
@@ -99,18 +100,36 @@ export const useGameInfoProvider = (
 
 const SeedDataOutput: React.FC<ISeedDataProps> = ({ seed, isDaily = false }) => {
   const [gameInfoProvider, data] = useGameInfoProvider(seed);
+  const [explorerView, setExplorerView] = useLocalStorage<boolean>('explorer-view', false);
 
   if (!gameInfoProvider || !data) {
     return <p>Loading</p>;
   }
 
+  const handleShowExplorer = () => {
+    setExplorerView(!explorerView);
+  };
+
   return (
     <GameInfoContext.Provider value={{ gameInfoProvider, data }}>
       <Stack className="seed-info">
-        <p className="my-2">
-          Seed: {seed} {isDaily && ` (Daily)`}
-        </p>
-        <SeedInfo isDaily={isDaily} seed={seed} infoProvider={gameInfoProvider} data={data} />
+        <Stack direction="horizontal" gap={2}>
+        <div>
+          <p className="my-2">
+            Seed: {seed} {isDaily && ` (Daily)`}
+          </p>
+        </div>
+        <div className="my-2 ms-auto">
+          <Button variant="primary" onClick={handleShowExplorer}>
+            Open Explorer View
+          </Button>
+        </div>
+      </Stack>
+        { explorerView 
+          ? <SeedExplorer isDaily={isDaily} seed={seed} infoProvider={gameInfoProvider} data={data} /> 
+          : <SeedInfo isDaily={isDaily} seed={seed} infoProvider={gameInfoProvider} data={data} />
+        }
+        
       </Stack>
     </GameInfoContext.Provider>
   );
