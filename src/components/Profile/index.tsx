@@ -11,18 +11,36 @@ import classNames from "classnames";
 
 const oauthLink = () => {
   const noitoolSessionToken = Cookies.get("noitoolSessionToken");
+  const clientId = import.meta.env.VITE_PATREON_ID;
+  const redirectUri = import.meta.env.VITE_PATREON_REDIRECT_URL;
+
+  if (!clientId || !redirectUri) {
+    console.warn("Patreon OAuth credentials not configured in frontend");
+    return "#";
+  }
 
   const patreonLink = new URL("https://www.patreon.com/oauth2/authorize");
   patreonLink.searchParams.append("response_type", "code");
-  patreonLink.searchParams.append("client_id", import.meta.env.VITE_PATREON_ID!);
-  patreonLink.searchParams.append("redirect_uri", import.meta.env.VITE_PATREON_REDIRECT_URL!);
-  // patreonLink.searchParams.append('scope', 'identity, identity[email], identity.memberships, campaigns');
+  patreonLink.searchParams.append("client_id", clientId);
+  patreonLink.searchParams.append("redirect_uri", redirectUri);
   patreonLink.searchParams.append("state", noitoolSessionToken!);
 
   return patreonLink.toString();
 };
 
 const LinkPatreon = () => {
+  const patreonClientId = import.meta.env.VITE_PATREON_ID;
+
+  if (!patreonClientId) {
+    return (
+      <div>
+        <p className="alert alert-warning">
+          Patreon integration is not configured. Please contact the administrator or check your environment variables.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <p>

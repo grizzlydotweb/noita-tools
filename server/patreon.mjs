@@ -7,8 +7,14 @@ const router = Router();
 
 class TokenManager {
   constructor(clientId, clientSecret) {
-    if (!clientId || !clientSecret) {
-      throw new Error("Patreon OAuth client ID and secret are required");
+    this.isConfigured = !!(clientId && clientSecret);
+
+    if (!this.isConfigured) {
+      console.warn("Patreon OAuth client ID and secret not configured. Patreon integration will be disabled.");
+      this.patreonOAuthClient = null;
+      this.creatorAccessToken = null;
+      this.creatorRefreshToken = null;
+      return;
     }
 
     try {
@@ -24,8 +30,14 @@ class TokenManager {
   }
 
   async refreshCreatorToken() {
+    if (!this.isConfigured) {
+      console.warn("Patreon not configured, skipping token refresh");
+      return null;
+    }
+
     if (!this.creatorRefreshToken) {
-      throw new Error("PATREON_CREATORS_REFRESH_TOKEN is not configured");
+      console.warn("PATREON_CREATORS_REFRESH_TOKEN is not configured, skipping token refresh");
+      return null;
     }
 
     try {
@@ -51,6 +63,11 @@ class TokenManager {
   }
 
   async makeAuthorizedRequest(url, options) {
+    if (!this.isConfigured) {
+      console.warn("Patreon not configured, skipping authorized request");
+      throw new Error("Patreon integration not configured");
+    }
+
     if (!this.creatorAccessToken) {
       console.warn("No creator access token available, skipping request");
       throw new Error("No valid access token available");
@@ -107,25 +124,21 @@ class TokenManager {
 
 const tokenManager = new TokenManager(process.env.PATREON_CLIENT_ID, process.env.PATREON_CLIENT_SECRET);
 
-// Check if required environment variables are set
-const requiredEnvVars = [
-  "PATREON_CLIENT_ID",
-  "PATREON_CLIENT_SECRET",
-  "PATREON_CREATORS_ACCESS_TOKEN",
-  "PATREON_CREATORS_REFRESH_TOKEN",
-];
+if (tokenManager.isConfigured) {
+  const requiredEnvVars = ["PATREON_CREATORS_ACCESS_TOKEN", "PATREON_CREATORS_REFRESH_TOKEN"];
 
-const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+  const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
-if (missingEnvVars.length > 0) {
-  console.warn("Patreon OAuth configuration incomplete. Missing environment variables:", missingEnvVars);
-  console.warn("Patreon integration will be disabled until these variables are set.");
-} else {
-  console.log("Patreon OAuth configuration complete. Token manager initialized successfully.");
+  if (missingEnvVars.length > 0) {
+    console.warn("Patreon creator tokens not configured. Missing:", missingEnvVars);
+    console.warn("Patreon API calls will be disabled until these variables are set.");
+  } else {
+    console.log("Patreon OAuth configuration complete. Token manager initialized successfully.");
+  }
 }
 
 schedule("0 0 */10 * *", () => {
-  if (tokenManager.creatorAccessToken) {
+  if (tokenManager.isConfigured && tokenManager.creatorAccessToken) {
     tokenManager.refreshCreatorToken().catch(error => {
       console.error("Scheduled token refresh failed:", error);
     });
@@ -189,7 +202,8 @@ const membersQuery = async (cursor = null) => {
 };
 
 const getPatreonPatronsData = async () => {
-  if (!tokenManager.creatorAccessToken) {
+  if (!tokenManager.isConfigured || !tokenManager.creatorAccessToken) {
+    console.warn("Patreon not configured or no access token, returning empty patron data");
     return { tierMembers: {}, tiers: {} };
   }
 
