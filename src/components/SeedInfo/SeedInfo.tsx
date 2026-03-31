@@ -22,94 +22,85 @@ import SnowcaveSecretChamber from "./SeedInfoViews/SnowcaveSecretChamber";
 import SnowcastleSecretChamber from "./SeedInfoViews/SnowcastleSecretChamber";
 
 const WithShow = ({ id, children }) => {
-  const config = useLiveQuery(() => db.configItems.get({ key: `panel-${id}-config` }));
-  const hasConfig = !!config;
+	const config = useLiveQuery(() => db.configItems.get({ key: `panel-${id}-config` }));
+	const hasConfig = !!config;
 
-  if (hasConfig && !config.val) {
-    return <div></div>;
-  }
+	if (hasConfig && !config.val) {
+		return <div></div>;
+	}
 
-  return <div>{children}</div>;
+	return <div>{children}</div>;
 };
 
 const SeedInfo = ({ data, infoProvider, seed, isDaily }) => {
-  const searchParams = new URLSearchParams(document.location.search);
-  const showMap = !!searchParams.get("map");
+	const searchParams = new URLSearchParams(document.location.search);
+	const showMap = !!searchParams.get("map");
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-between",
-        flexDirection: "row",
+	return (
+		<div
+			style={{
+				display: "flex",
+				flexWrap: "wrap",
+				justifyContent: "space-between",
+				flexDirection: "row",
 
-        gap: "1rem",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          flexDirection: "column",
-          gap: "1rem",
-          flexGrow: 1,
-          width: "min-content",
-        }}
-      >
-        <WithShow id="holy-mountain">
-          <HolyMountain infoProvider={infoProvider} shop={data.shop} perks={data.perks} perkDeck={data.perkDeck} />
-        </WithShow>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "1rem",
-            justifyContent: "space-around",
-          }}
-        >
-          {!isDaily && (
-            <WithShow id="start">
-              <Start
-                startingFlask={data.startingFlask}
-                startingSpell={data.startingSpell}
-                startingBombSpell={data.startingBombSpell}
-              />
-            </WithShow>
-          )}
-          <WithShow id="weather">
-            <Weather infoProvider={infoProvider} weather={data.weather} />
-          </WithShow>
-          <WithShow id="watercave">
-            <Watercave infoProvider={infoProvider} waterCave={data.waterCave} />
-          </WithShow>
-          <WithShow id="alchemy">
-            <Alchemy infoProvider={infoProvider} alchemy={data.alchemy} />
-          </WithShow>
-          <WithShow id="biome">
-            <Biome infoProvider={infoProvider} biomeData={data.biomeModifiers} />
-          </WithShow>
-          <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
-            <WithShow id="secret-wands">
-              <ExcavationsiteCubeChamber />
-              <SnowcaveSecretChamber />
-              {/* <SnowcastleSecretChamber /> not ready yet */}
-            </WithShow>
-          </div>
-        </div>
-      </div>
+				gap: "1rem",
+			}}
+		>
+			<div
+				style={{
+					display: "flex",
+					flexWrap: "wrap",
+					flexDirection: "column",
+					gap: "1rem",
+					flexGrow: 1,
+					width: "min-content",
+				}}
+			>
+				<WithShow id="holy-mountain">
+					<HolyMountain infoProvider={infoProvider} shop={data.shop} perks={data.perks} perkDeck={data.perkDeck} />
+				</WithShow>
+				<div
+					style={{
+						display: "flex",
+						flexWrap: "wrap",
+						gap: "1rem",
+						justifyContent: "space-around",
+					}}
+				>
+					{!isDaily && (
+						<WithShow id="start">
+							<Start
+								startingFlask={data.startingFlask}
+								startingSpell={data.startingSpell}
+								startingBombSpell={data.startingBombSpell}
+							/>
+						</WithShow>
+					)}
+					<WithShow id="alchemy">
+						<Alchemy infoProvider={infoProvider} alchemy={data.alchemy} />
+					</WithShow>
+					<div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+						<WithShow id="secret-wands">
+							<ExcavationsiteCubeChamber />
+							<SnowcaveSecretChamber />
+							{/* <SnowcastleSecretChamber /> not ready yet */}
+						</WithShow>
+					</div>
+				</div>
+			</div>
 
-      <WithShow id="fungal">
-        <FungalShifts infoProvider={infoProvider} fungalData={data.fungalShifts} />
-      </WithShow>
+			<WithShow id="fungal">
+				<FungalShifts infoProvider={infoProvider} fungalData={data.fungalShifts} />
+			</WithShow>
 
-      {showMap && (
-        <WithShow id="map">
-          <MapComponent infoProvider={infoProvider} worldOffset={0} mapPart="MainPath" />
-        </WithShow>
-      )}
-    </div>
-  );
+			{showMap && (
+				<WithShow id="map">
+					<MapComponent infoProvider={infoProvider} worldOffset={0} mapPart="MainPath" />
+				</WithShow>
+			)}
+		</div>
+	);
 };
 
 export default SeedInfo;
