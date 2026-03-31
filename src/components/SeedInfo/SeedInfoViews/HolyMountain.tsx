@@ -32,6 +32,7 @@ import {
 import { IShopItems, IShopType, ShopInfoProvider } from "../../../services/SeedInfo/infoHandler/InfoProviders/Shop";
 import { Square } from "../../helpers";
 import ShopItems from "./ShopItems";
+import PacifistChest from "./PacifistChest";
 import { useTranslation } from "react-i18next";
 import Perk from "../../Icons/Perk";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -40,7 +41,7 @@ import useLocalStorage from "../../../services/useLocalStorage";
 import { useSpellFavorite, useFavoritePerks } from "./helpers";
 import classNames from "classnames";
 import Entity from "../../Icons/Entity";
-import { IItem } from "../../../services/SeedInfo/infoHandler/InfoProviders/ChestRandom";
+import type { IItem } from "../../../services/SeedInfo/infoHandler/InfoProviders/ChestRandom";
 import { cloneDeep } from "lodash";
 
 const perkWidth = "3rem";
@@ -102,36 +103,6 @@ const RerollPane = (props: IRerollPaneProps) => {
   );
 };
 
-interface IPacifistChestProps {
-  items: IItem[];
-}
-// TODO: Extract this into it's own file to decouple
-const PacifistChest: FC<IPacifistChestProps> = ({ items }) => {
-  const goldReward = items.filter(r => r.entity.includes("goldnugget"));
-  const nonGoldReward = items.filter(r => !r.entity.includes("goldnugget"));
-  let goldSumm = goldReward.reduce<number>((c, r) => {
-    // either goldnugget or goldnugget_x
-    const gn = r.entity.split("/")[4].split(".")[0];
-    if (gn === "goldnugget") {
-      return c + 10;
-    }
-    const number = gn.replace("goldnugget_", "");
-    return c + parseInt(number, 10);
-  }, 0);
-  return (
-    <>
-      {goldSumm > 0 && (
-        <div className="d-flex m-2 flex-column align-content-center justify-content-center align-items-center">
-          <Entity width="1rem" height="1rem" id="data/entities/items/pickup/goldnugget.xml" />
-          {goldSumm}
-        </div>
-      )}
-      {nonGoldReward.map((r, i) => (
-        <Entity preview key={`${r.entity} - ${i}`} id={r.entity} entityParams={{ extra: r.extra, x: r.x, y: r.y }} />
-      ))}
-    </>
-  );
-};
 
 // TODO: Extract this into it's own file to decouple
 const Shop = ({ type, handleOpenShopInfo, favoriteSpells }) => {
@@ -247,7 +218,7 @@ const PerkRow: FC<IPerkRowProps> = props => {
         <Shop type={type} handleOpenShopInfo={handleOpenShopInfo} favoriteSpells={favoriteSpells} />
       </td>
       <td style={{ height: "4rem" }} className="d-flex align-content-center justify-content-around align-items-center">
-        <PacifistChest items={pacifistChestItems} />
+        <PacifistChest items={pacifistChestItems} isSpellFavorite={isSpellFavorite} infoProvider={infoProvider} />
       </td>
       <td className="w-100">
         <Stack direction="horizontal" className="justify-content-center" gap={3}>
