@@ -5,6 +5,7 @@ import { useSearchParamsState } from "react-use-search-params-state";
 
 import SeedForm from "./SeedForm";
 import SeedDataOutput from "./SeedDataOutput";
+import LiveMemorySeed from "./LiveMemorySeed";
 import { db } from "../../services/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import FungalShifts from "./SeedInfoViews/FungalShifts";
@@ -286,10 +287,15 @@ const SeedData = () => {
           </Row>
         </Col>
       </Row>
-      <Stack>
-        <SeedForm onSubmit={seed => handleSetSeed(seed)} />
-        {seed ? <SeedDataOutput isDaily={seed === dailySeed} seed={seed} /> : null}
-      </Stack>
+      <Row>
+        <Col lg="6" md="12">
+          <SeedForm onSubmit={seed => handleSetSeed(seed)} />
+        </Col>
+        <Col lg="6" md="12">
+          <LiveMemorySeed onSeedDetected={seed => handleSetSeed(seed)} />
+        </Col>
+      </Row>
+      <Stack>{seed ? <SeedDataOutput isDaily={seed === dailySeed} seed={seed} /> : null}</Stack>
     </div>
   );
 };
