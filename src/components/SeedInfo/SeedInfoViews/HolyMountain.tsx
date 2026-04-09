@@ -103,7 +103,6 @@ const RerollPane = (props: IRerollPaneProps) => {
   );
 };
 
-
 // TODO: Extract this into it's own file to decouple
 const Shop = ({ type, handleOpenShopInfo, favoriteSpells }) => {
   const Icon = type === IShopType.wand ? WandIcon : LightBulletIcon;
@@ -121,7 +120,7 @@ const Shop = ({ type, handleOpenShopInfo, favoriteSpells }) => {
     .slice(0, maxFavoriteSpellPreview)
     .map(([spell, count]) => (
       <BadgesWrapper key={spell} badges={[CountBadge({ text: count.toString() })]}>
-        <Entity key={spell} width="1rem" height="1rem" id="Spell" entityParams={{ extra: spell }} />
+        <Entity key={spell} width="1.4rem" height="1.4rem" id="Spell" entityParams={{ extra: spell }} />
       </BadgesWrapper>
     ));
 

@@ -70,7 +70,7 @@ const PacifistChest: FC<IPacifistChestProps> = ({ items, isSpellFavorite, infoPr
                 .slice(0, 3) // Limit to 3 for display
                 .map(([spell, count]) => (
                   <BadgesWrapper key={spell} badges={[CountBadge({ text: count.toString() })]}>
-                    <Entity key={spell} width="0.75rem" height="0.75rem" id="Spell" entityParams={{ extra: spell }} />
+                    <Entity key={spell} width="1.1rem" height="1.1rem" id="Spell" entityParams={{ extra: spell }} />
                   </BadgesWrapper>
                 ));
 
@@ -81,14 +81,10 @@ const PacifistChest: FC<IPacifistChestProps> = ({ items, isSpellFavorite, infoPr
                     <div
                       className="position-absolute"
                       style={{
-                        bottom: 0,
-                        right: 0,
-                        transform: "translate(25%, 25%)",
+                        top: "-0.2rem",
+                        right: "-0.2rem",
                         display: "flex",
                         gap: "2px",
-                        padding: "2px",
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        borderRadius: "3px",
                       }}
                     >
                       {favSpellIcons}

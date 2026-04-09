@@ -77,9 +77,6 @@ const SeedInfo = ({ data, infoProvider, seed, isDaily }) => {
 							/>
 						</WithShow>
 					)}
-					<WithShow id="alchemy">
-						<Alchemy infoProvider={infoProvider} alchemy={data.alchemy} />
-					</WithShow>
 					<div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
 						<WithShow id="secret-wands">
 							<ExcavationsiteCubeChamber />
@@ -90,9 +87,14 @@ const SeedInfo = ({ data, infoProvider, seed, isDaily }) => {
 				</div>
 			</div>
 
-			<WithShow id="fungal">
-				<FungalShifts infoProvider={infoProvider} fungalData={data.fungalShifts} />
-			</WithShow>
+			<div>
+				<WithShow id="alchemy">
+					<Alchemy infoProvider={infoProvider} alchemy={data.alchemy} />
+				</WithShow>
+				<WithShow id="fungal">
+					<FungalShifts infoProvider={infoProvider} fungalData={data.fungalShifts} />
+				</WithShow>
+			</div>
 
 			{showMap && (
 				<WithShow id="map">
