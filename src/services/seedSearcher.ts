@@ -69,6 +69,9 @@ export class SeedSearcher {
   avgExecTime = 0;
   sumExecTime = 0;
 
+  // Cache for single seed checks
+  private singleSeedCache: { seed: number; rulesHash: string; result: boolean } | null = null;
+
   constructor(gameInfoProvider?: GameInfoProvider) {
     if (gameInfoProvider) {
       this.gameInfoProvider = gameInfoProvider;
@@ -293,5 +296,48 @@ export class SeedSearcher {
 
   async getFoundSeed() {
     return this.foundSeed;
+  }
+
+  /**
+   * Check if a single seed matches the given rules without running a full batch search
+   * @param seed The seed to check
+   * @param rules The rules to check against
+   * @param unlockedSpells Optional array of unlocked spells
+   * @returns Promise<boolean> True if the seed matches all rules
+   */
+  async checkSingleSeed(seed: number, rules: ILogicRules, unlockedSpells?: boolean[]): Promise<boolean> {
+    // Generate a simple hash of the rules for caching
+    const rulesHash = JSON.stringify(rules);
+
+    // Check cache
+    if (this.singleSeedCache && this.singleSeedCache.seed === seed && this.singleSeedCache.rulesHash === rulesHash) {
+      return this.singleSeedCache.result;
+    }
+
+    // Ensure game info provider is ready
+    await this.gameInfoProvider.ready();
+
+    // Update unlocked spells if provided
+    if (unlockedSpells) {
+      this.gameInfoProvider.unlockedSpells = unlockedSpells;
+      this.gameInfoProvider.randoms.SetUnlockedSpells(unlockedSpells);
+    }
+
+    // Set the seed
+    this.gameInfoProvider.randoms.SetWorldSeed(seed);
+
+    // Check the rules
+    let result = false;
+    try {
+      result = rules.rules.every(r => this.check(r));
+    } catch (e) {
+      console.error(`Error checking seed ${seed}:`, e);
+      result = false;
+    }
+
+    // Cache the result
+    this.singleSeedCache = { seed, rulesHash, result };
+
+    return result;
   }
 }

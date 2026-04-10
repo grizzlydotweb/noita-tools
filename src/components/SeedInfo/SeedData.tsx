@@ -5,8 +5,7 @@ import { useSearchParamsState } from "react-use-search-params-state";
 
 import SeedForm from "./SeedForm";
 import SeedDataOutput from "./SeedDataOutput";
-import LiveMemorySeed from "./LiveMemorySeed";
-import NoitaLauncher from "../Settings/NoitaLauncher";
+import LocalGameControl from "./LocalGameControl";
 import { db } from "../../services/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import FungalShifts from "./SeedInfoViews/FungalShifts";
@@ -293,12 +292,7 @@ const SeedData = () => {
           <SeedForm onSubmit={seed => handleSetSeed(seed)} />
         </Col>
         <Col lg="6" md="12">
-          <LiveMemorySeed onSeedDetected={seed => handleSetSeed(seed)} />
-        </Col>
-      </Row>
-      <Row className="mt-3">
-        <Col lg="6" md="12">
-          <NoitaLauncher />
+          <LocalGameControl onSeedDetected={seed => handleSetSeed(seed)} />
         </Col>
       </Row>
       <Stack>{seed ? <SeedDataOutput isDaily={seed === dailySeed} seed={seed} /> : null}</Stack>
