@@ -289,7 +289,7 @@ const LocalGameControl: FC<LocalGameControlProps> = ({ onSeedDetected }) => {
         {/* Search Dropdown */}
         <Stack direction="horizontal" gap={2}>
           <Form.Label className="mb-0" style={{ minWidth: "140px" }}>
-            Auto-Restart Search:
+            Search:
           </Form.Label>
           <Form.Select
             size="sm"
