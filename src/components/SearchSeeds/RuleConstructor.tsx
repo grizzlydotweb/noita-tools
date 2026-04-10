@@ -9,6 +9,7 @@ import StartingSpell from "./SearchViews/StartingSpell";
 import StartingBombSpell from "./SearchViews/StartingBomb";
 import Weather from "./SearchViews/Weather";
 import Perks from "./SearchViews/Perks";
+import PerksInLevels from "./SearchViews/PerksInLevels";
 import FungalShifts from "./SearchViews/FungalShifts";
 import MapSearch from "./SearchViews/Map";
 import Search from "./SearchViews/Search";
@@ -93,6 +94,21 @@ export const RuleConstructors = {
       },
     },
     Title: () => "Perks",
+  },
+  perksInLevels: {
+    Component: PerksInLevels,
+    defaultConfig: {
+      params: [],
+      path: "",
+      val: {
+        perks: [],
+        fromLevel: 0,
+        toLevel: 6,
+        shouldMatchAll: false,
+        maxRerollCount: 0,
+      },
+    },
+    Title: () => "Perks In Levels",
   },
   search: {
     Component: Search,

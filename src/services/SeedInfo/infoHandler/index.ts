@@ -9,6 +9,7 @@ import type { MapInfoProvider } from "./InfoProviders/Map";
 import type { MaterialInfoProvider } from "./InfoProviders/Material";
 import type { WeatherInfoProvider } from "./InfoProviders/Weather";
 import type { ShopInfoProvider } from "./InfoProviders/Shop";
+import type { PerksInLevelsProvider } from "./InfoProviders/PerksInLevels";
 import type { SpellsInShopLevelsProvider } from "./InfoProviders/SpellsInShopLevels";
 import type { SpellInfoProvider } from "./InfoProviders/Spell";
 import type { StartingBombSpellInfoProvider } from "./InfoProviders/StartingBomb";
@@ -45,6 +46,7 @@ interface IProviders {
   map: MapInfoProvider;
   material: MaterialInfoProvider;
   perk: PerkInfoProvider;
+  perksInLevels: PerksInLevelsProvider;
   weather: WeatherInfoProvider;
   shop: ShopInfoProvider;
   spellsInShopLevels: SpellsInShopLevelsProvider;
@@ -157,6 +159,7 @@ export class GameInfoProvider extends EventTarget {
       map: () => import("./InfoProviders/Map"),
       material: () => import("./InfoProviders/Material"),
       perk: () => import("./InfoProviders/Perk"),
+      perksInLevels: () => import("./InfoProviders/PerksInLevels"),
       weather: () => import("./InfoProviders/Weather"),
       shop: () => import("./InfoProviders/Shop"),
       spellsInShopLevels: () => import("./InfoProviders/SpellsInShopLevels"),
