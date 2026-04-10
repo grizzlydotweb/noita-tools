@@ -1,6 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
 import { readNoitaSeed } from "./noitaMemoryReader.mjs";
+import ProcessManager from "./noitaLauncher.mjs";
 
 const router = Router();
 
@@ -40,6 +41,33 @@ router.get("/noita/current-seed", async (req, res) => {
     res.status(500).json({
       seed: null,
       error: "Internal server error",
+    });
+  }
+});
+
+// Noita launcher endpoint
+router.post("/noita/restart", async (req, res) => {
+  try {
+    console.log("Restart request received:", req.body);
+
+    const { cleanSave = true, gameMode = "normal" } = req.body;
+
+    const processManager = new ProcessManager();
+    const result = await processManager.restartNoita({ cleanSave, gameMode });
+
+    if (result.success) {
+      console.log("Noita restart successful:", result.message);
+      res.status(200).json(result);
+    } else {
+      console.error("Noita restart failed:", result.message);
+      res.status(500).json(result);
+    }
+  } catch (err) {
+    console.error("Error in /api/noita/restart:", err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: { message: err.message },
     });
   }
 });
