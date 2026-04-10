@@ -3,6 +3,7 @@ import { RuleType } from "../../services/SeedInfo/infoHandler/IRule";
 import Alchemy from "./SearchViews/Alchemy";
 import Biomes from "./SearchViews/Biomes";
 import Shop from "./SearchViews/Shop";
+import SpellsInShopLevels from "./SearchViews/SpellsInShopLevels";
 import StartingFlask from "./SearchViews/StartingFlask";
 import StartingSpell from "./SearchViews/StartingSpell";
 import StartingBombSpell from "./SearchViews/StartingBomb";
@@ -105,6 +106,20 @@ export const RuleConstructors = {
       val: new Array(7).fill(undefined),
     },
     Title: () => "Shop",
+  },
+  spellsInShopLevels: {
+    Component: SpellsInShopLevels,
+    defaultConfig: {
+      params: [],
+      path: "",
+      val: {
+        spells: [],
+        fromLevel: 0,
+        toLevel: 6,
+        shouldMatchAll: false,
+      },
+    },
+    Title: () => "Spells In Shop Levels",
   },
   startingBombSpell: {
     Component: StartingBombSpell,

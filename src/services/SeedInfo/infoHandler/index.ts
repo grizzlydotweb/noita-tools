@@ -9,6 +9,7 @@ import type { MapInfoProvider } from "./InfoProviders/Map";
 import type { MaterialInfoProvider } from "./InfoProviders/Material";
 import type { WeatherInfoProvider } from "./InfoProviders/Weather";
 import type { ShopInfoProvider } from "./InfoProviders/Shop";
+import type { SpellsInShopLevelsProvider } from "./InfoProviders/SpellsInShopLevels";
 import type { SpellInfoProvider } from "./InfoProviders/Spell";
 import type { StartingBombSpellInfoProvider } from "./InfoProviders/StartingBomb";
 import type { StartingFlaskInfoProvider } from "./InfoProviders/StartingFlask";
@@ -46,6 +47,7 @@ interface IProviders {
   perk: PerkInfoProvider;
   weather: WeatherInfoProvider;
   shop: ShopInfoProvider;
+  spellsInShopLevels: SpellsInShopLevelsProvider;
   spells: SpellInfoProvider;
   startingBombSpell: StartingBombSpellInfoProvider;
   startingFlask: StartingFlaskInfoProvider;
@@ -157,6 +159,7 @@ export class GameInfoProvider extends EventTarget {
       perk: () => import("./InfoProviders/Perk"),
       weather: () => import("./InfoProviders/Weather"),
       shop: () => import("./InfoProviders/Shop"),
+      spellsInShopLevels: () => import("./InfoProviders/SpellsInShopLevels"),
       spells: () => import("./InfoProviders/Spell"),
       startingBombSpell: () => import("./InfoProviders/StartingBomb"),
       startingFlask: () => import("./InfoProviders/StartingFlask"),
@@ -202,6 +205,11 @@ export class GameInfoProvider extends EventTarget {
             getArgs: () => [...baseArgs, providers.chestRandom],
           };
         case "shop":
+          return {
+            deps: ["wand", "spells"],
+            getArgs: () => [...baseArgs, providers.wand, providers.spells],
+          };
+        case "spellsInShopLevels":
           return {
             deps: ["wand", "spells"],
             getArgs: () => [...baseArgs, providers.wand, providers.spells],
