@@ -280,6 +280,11 @@ const FungalShifts = (props: IFungalShiftsProps) => {
   return (
     <Table striped hover borderless size="sm">
       <tbody>
+        <tr>
+          <td>&nbsp;</td>
+          <td>From</td>
+          <td>To</td>
+        </tr>
         {fungalData.map((data, i) => (
           <tr key={i + t("$current_language")} className="align-middle">
             <td className="text-muted">{i + 1}</td>
